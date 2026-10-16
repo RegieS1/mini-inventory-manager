@@ -46,16 +46,18 @@ function asProduct(row: {
   };
 }
 
-export async function listProducts(search: string, stock: StockFilter) {
+export async function listProducts(search: string, stock: StockFilter, limit?: number, offset = 0) {
   if (!getSupabaseServerConfig()) {
-    return { products: [] as Product[], error: "Supabase is not configured." };
+    return { products: [] as Product[], error: "Supabase is not configured.", total: 0 };
   }
 
   const term = search.trim().replace(/[%_,.()]/g, "");
+  const paged = Boolean(limit) && stock === "all";
   let query = createSupabaseServerClient()
     .from("products")
     .select(
       "id,name,sku,description,category,supplier,cost_price,selling_price,low_stock_threshold,quantity_on_hand,is_active,created_at,updated_at",
+      paged ? { count: "exact" } : undefined,
     )
     .eq("is_active", true)
     .order("name");
@@ -64,15 +66,20 @@ export async function listProducts(search: string, stock: StockFilter) {
     query = query.or(`name.ilike.%${term}%,sku.ilike.%${term}%`);
   }
 
-  const { data, error } = await query;
-
-  if (error) {
-    return { products: [] as Product[], error: error.message };
+  if (paged && limit) {
+    query = query.range(offset, offset + limit - 1);
   }
 
-  const products = (data ?? []).map(asProduct).filter((product) => matchesStock(product, stock));
+  const { data, error, count } = await query;
 
-  return { products, error: null };
+  if (error) {
+    return { products: [] as Product[], error: error.message, total: 0 };
+  }
+
+  const matched = (data ?? []).map(asProduct).filter((product) => matchesStock(product, stock));
+  const products = limit && stock !== "all" ? matched.slice(offset, offset + limit) : matched;
+
+  return { products, error: null, total: paged ? count ?? products.length : matched.length };
 }
 
 export async function getDefaultLowStockThreshold() {

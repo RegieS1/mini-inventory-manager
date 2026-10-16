@@ -10,7 +10,7 @@ export function SetPasswordButton({ username }: { username: string }) {
   } satisfies SetPasswordState);
 
   return (
-    <form action={action} className="flex flex-wrap items-center gap-2">
+    <form action={action} className="flex w-full min-w-0 items-center gap-2">
       <input type="hidden" name="username" value={username} />
       <input
         name="password"
@@ -20,7 +20,7 @@ export function SetPasswordButton({ username }: { username: string }) {
         autoComplete="new-password"
         placeholder="New password"
         aria-label={`New password for ${username}`}
-        className="h-8 w-36 rounded-lg border border-line bg-surface px-2 text-xs"
+        className="h-9 min-w-0 flex-1 rounded-lg border border-line bg-surface px-3 text-sm"
       />
       <button
         type="submit"

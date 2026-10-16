@@ -10,6 +10,8 @@ create table if not exists accounts (
   created_at timestamptz not null default now()
 );
 
+alter table accounts add column if not exists created_at timestamptz not null default now();
+
 alter table inventory_settings add column if not exists logo_base64 text;
 alter table inventory_settings add column if not exists logo_content_type text;
 alter table inventory_settings add column if not exists logo_updated_at timestamptz;

@@ -207,7 +207,7 @@ const loadAccounts = cache(async () => {
   const { data, error } = await createSupabaseServerClient()
     .from("accounts")
     .select("username,email,password_hash,active,permissions")
-    .order("created_at");
+    .order("username");
 
   if (error) {
     throw new Error(hostedHint(error.message));

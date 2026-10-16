@@ -57,9 +57,9 @@ export function CreateAccountForm({ ceiling }: { ceiling: Permissions }) {
   }
 
   return (
-    <form action={action} className="mt-8 max-w-3xl">
+    <form action={action} className="mt-6 rounded-xl border border-line bg-surface p-4">
       <h2 className="text-lg font-semibold">New account</h2>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-sm">
           <span className="font-medium">Username</span>
           <input name="username" required autoComplete="off" className="h-11 rounded-lg border border-line bg-surface px-3" />
@@ -76,53 +76,35 @@ export function CreateAccountForm({ ceiling }: { ceiling: Permissions }) {
         </label>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-line bg-surface">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-copper-soft text-xs text-muted">
-            <tr>
-              <th className="px-4 py-3 font-medium">Section</th>
-              {permissionActions.map((permission) => (
-                <th key={permission} className="px-4 py-3 font-medium capitalize">
-                  {permission}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {permissionSections.map((section) => (
-              <tr key={section} className="border-t border-line">
-                <th scope="row" className="px-4 py-4 text-left font-semibold">
-                  {permissionSectionLabels[section]}
-                  {section === "movements" ? (
-                    <p className="mt-1 text-xs font-normal text-muted">
-                      Posted movements are kept. Edit and delete stay off.
-                    </p>
-                  ) : null}
-                </th>
-                {permissionActions.map((permission) => {
-                  const isLocked = closedPermissions[section]?.includes(permission) ?? false;
-                  const beyondAccount = !ceiling[section][permission];
-                  const needsRead = permission !== "read" && !grid[section].read;
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {permissionSections.map((section) => (
+          <div key={section} className="rounded-lg border border-line p-3">
+            <p className="text-sm font-semibold">{permissionSectionLabels[section]}</p>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {permissionActions.map((permission) => {
+                const isLocked = closedPermissions[section]?.includes(permission) ?? false;
+                const beyondAccount = !ceiling[section][permission];
+                const needsRead = permission !== "read" && !grid[section].read;
 
-                  return (
-                    <td key={permission} className="px-4 py-4">
-                      <input
-                        type="checkbox"
-                        name={`${section}.${permission}`}
-                        checked={grid[section][permission]}
-                        disabled={isLocked || beyondAccount || needsRead}
-                        onChange={() => toggle(section, permission)}
-                        className="size-4 accent-copper disabled:opacity-40"
-                        aria-label={`${permissionSectionLabels[section]} ${permission}`}
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                return (
+                  <label key={permission} className="flex items-center gap-2 text-sm capitalize">
+                    <input
+                      type="checkbox"
+                      name={`${section}.${permission}`}
+                      checked={grid[section][permission]}
+                      disabled={isLocked || beyondAccount || needsRead}
+                      onChange={() => toggle(section, permission)}
+                      className="size-4 accent-copper disabled:opacity-40"
+                    />
+                    {permission}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
+      <p className="mt-3 text-xs text-muted">Posted movements are kept. Edit and delete stay off for stock movements.</p>
 
       {state.error ? (
         <p role="alert" className="mt-4 text-sm text-stock-out">

@@ -8,7 +8,15 @@ import { formatPeso } from "@/lib/money";
 import { margin, reorderQuantity } from "@/lib/shop";
 import type { Product } from "@/lib/types";
 
-export function ProductBrowser({ products, canMove }: { products: Product[]; canMove: boolean }) {
+export function ProductBrowser({
+  products,
+  canMove,
+  start = 1,
+}: {
+  products: Product[];
+  canMove: boolean;
+  start?: number;
+}) {
   const router = useRouter();
   const [selected, setSelected] = useState<Product | null>(null);
 
@@ -42,10 +50,11 @@ export function ProductBrowser({ products, canMove }: { products: Product[]; can
   return (
     <>
       <ul className="flex flex-col gap-2 md:hidden">
-        {products.map((product) => (
+        {products.map((product, index) => (
           <li key={product.id} className="relative rounded-xl border border-line bg-surface p-3">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
+            <div className="flex items-start gap-3">
+              <span className="w-6 shrink-0 pt-0.5 text-xs font-medium text-muted">{start + index}</span>
+              <div className="min-w-0 flex-1">
                 <button
                   type="button"
                   onClick={() => setSelected(product)}
@@ -69,35 +78,37 @@ export function ProductBrowser({ products, canMove }: { products: Product[]; can
         ))}
       </ul>
       <div className="hidden overflow-x-auto rounded-xl border border-line bg-surface md:block">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full table-fixed text-left text-sm">
           <thead className="bg-copper-soft text-xs text-muted">
             <tr>
-              <th className="px-4 py-3 font-medium">Product</th>
-              <th className="px-4 py-3 font-medium">Category</th>
-              <th className="px-4 py-3 font-medium">Cost</th>
-              <th className="px-4 py-3 font-medium">Selling</th>
-              <th className="px-4 py-3 font-medium">On hand</th>
-              <th className="px-4 py-3 font-medium">Status</th>
+              <th className="w-12 px-3 py-2 font-medium">#</th>
+              <th className="px-3 py-2 font-medium">Product</th>
+              <th className="px-3 py-2 font-medium">Category</th>
+              <th className="px-3 py-2 font-medium">Cost</th>
+              <th className="px-3 py-2 font-medium">Selling</th>
+              <th className="px-3 py-2 font-medium">On hand</th>
+              <th className="px-3 py-2 font-medium">Status</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {products.map((product, index) => (
               <tr key={product.id} className="relative border-t border-line hover:bg-copper-soft">
-                <td className="px-4 py-3">
+                <td className="px-3 py-1.5 font-medium text-muted">{start + index}</td>
+                <td className="truncate px-3 py-1.5">
                   <button
                     type="button"
                     onClick={() => setSelected(product)}
-                    className="text-left font-semibold after:absolute after:inset-0"
+                    className="truncate text-left font-semibold after:absolute after:inset-0"
                   >
                     {product.name}
                   </button>
-                  <div className="text-xs text-muted">{product.sku}</div>
+                  <span className="ml-2 text-xs text-muted">{product.sku}</span>
                 </td>
-                <td className="px-4 py-3">{product.category ?? "—"}</td>
-                <td className="px-4 py-3">{formatPeso(product.cost_price)}</td>
-                <td className="px-4 py-3 text-muted">{formatPeso(product.selling_price)}</td>
-                <td className="px-4 py-3 font-semibold">{product.quantity_on_hand}</td>
-                <td className="px-4 py-3">
+                <td className="truncate px-3 py-1.5">{product.category ?? "—"}</td>
+                <td className="whitespace-nowrap px-3 py-1.5">{formatPeso(product.cost_price)}</td>
+                <td className="whitespace-nowrap px-3 py-1.5 text-muted">{formatPeso(product.selling_price)}</td>
+                <td className="px-3 py-1.5 font-semibold">{product.quantity_on_hand}</td>
+                <td className="px-3 py-1.5">
                   <StatusBadge product={product} />
                 </td>
               </tr>

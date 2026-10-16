@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/page-header";
 import { MovementList } from "@/components/movement-list";
 import { TableSkeleton } from "@/components/lazy-fallback";
 
+export const instant = false;
+
 export default async function MovementsPage({ searchParams }: PageProps<"/movements">) {
   if (!(await allows("movements", "read"))) {
     return <p className="text-sm text-muted">Your account cannot open stock movements.</p>;
@@ -13,7 +15,7 @@ export default async function MovementsPage({ searchParams }: PageProps<"/moveme
   const canWrite = await allows("movements", "write");
 
   return (
-    <div className="flex h-[calc(100dvh-10.75rem)] flex-col md:h-[calc(100dvh-3.5rem)]">
+    <div className="flex flex-col lg:h-[calc(100dvh-3.5rem)] lg:overflow-hidden">
       <div className="flex shrink-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <PageHeader
           title="Stock movements"

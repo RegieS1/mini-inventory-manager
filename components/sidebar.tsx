@@ -9,9 +9,10 @@ import { signOut } from "@/app/login/actions";
 import type { Permissions } from "@/lib/permissions";
 
 const navItems = [
-  { href: "/", label: "Dashboard", short: "Home", section: null },
+  { href: "/", label: "Dashboard", short: "Dashboard", section: null },
   { href: "/products", label: "Products", short: "Products", section: "products" },
   { href: "/movements", label: "Stock Movements", short: "Stock", section: "movements" },
+  { href: "/aging", label: "Aging", short: "Aging", section: "products" },
   { href: "/configuration", label: "Configuration", short: "Config", section: "accounts" },
   { href: "/settings", label: "Settings", short: "Settings", section: "settings" },
 ] as const;
@@ -78,7 +79,7 @@ export function Sidebar({
           );
         })}
       </nav>
-      <aside className="hidden w-[248px] shrink-0 flex-col bg-sidebar px-4 py-6 text-on-copper md:flex md:min-h-screen">
+      <aside className="hidden w-[248px] shrink-0 flex-col bg-sidebar px-4 py-6 text-on-copper md:sticky md:top-0 md:flex md:h-screen md:max-h-screen md:self-start">
         <div className="flex items-center gap-3">
           <BrandMark shopName={shopName} logoUrl={logoUrl} />
           <div>

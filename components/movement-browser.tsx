@@ -46,7 +46,7 @@ function formatTime(value: string) {
   }).format(new Date(value));
 }
 
-export function MovementBrowser({ movements }: { movements: MovementRow[] }) {
+export function MovementBrowser({ movements, start = 1 }: { movements: MovementRow[]; start?: number }) {
   const [selected, setSelected] = useState<MovementRow | null>(null);
 
   useEffect(() => {
@@ -68,31 +68,33 @@ export function MovementBrowser({ movements }: { movements: MovementRow[] }) {
 
   return (
     <>
-      <div className="mt-4 min-h-0 flex-1 overflow-auto overscroll-contain rounded-xl border border-line bg-surface">
-        <table className="w-full min-w-[980px] table-fixed text-left text-sm">
+      <div className="mt-4 overflow-x-auto rounded-xl border border-line bg-surface">
+        <table className="w-full table-fixed text-left text-sm">
           <thead className="sticky top-0 z-10 bg-copper-soft text-xs text-muted">
             <tr>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">Date</th>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">Time</th>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">Product</th>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">Type</th>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">Movement</th>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">By</th>
-              <th className="w-[14.28%] bg-copper-soft px-4 py-3 font-medium">Note</th>
+              <th className="w-12 bg-copper-soft px-3 py-2 font-medium">#</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">Date</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">Time</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">Product</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">Type</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">Movement</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">By</th>
+              <th className="bg-copper-soft px-3 py-2 font-medium">Note</th>
             </tr>
           </thead>
           <tbody>
-            {movements.map((movement) => {
+            {movements.map((movement, index) => {
               const increased = movement.quantityAfter > movement.quantityBefore;
               const signed = `${increased ? "+" : "−"}${movement.quantity}`;
 
               return (
                 <tr key={movement.id} className="relative border-t border-line hover:bg-copper-soft">
-                  <td className="whitespace-nowrap px-4 py-3">{formatWhen(movement.createdAt)}</td>
-                  <td className={`whitespace-nowrap px-4 py-3 font-semibold ${increased ? "text-stock-in" : "text-stock-out"}`}>
+                  <td className="px-3 py-1.5 font-medium text-muted">{start + index}</td>
+                  <td className="whitespace-nowrap px-3 py-1.5">{formatWhen(movement.createdAt)}</td>
+                  <td className={`whitespace-nowrap px-3 py-1.5 font-semibold ${increased ? "text-stock-in" : "text-stock-out"}`}>
                     {formatTime(movement.createdAt)}
                   </td>
-                  <td className="truncate px-4 py-3">
+                  <td className="truncate px-3 py-1.5">
                     <button
                       type="button"
                       onClick={() => setSelected(movement)}
@@ -101,17 +103,17 @@ export function MovementBrowser({ movements }: { movements: MovementRow[] }) {
                       {movement.productName}
                     </button>
                   </td>
-                  <td className={`px-4 py-3 font-semibold ${typeClass[movement.movementType]}`}>
+                  <td className={`px-3 py-1.5 font-semibold ${typeClass[movement.movementType]}`}>
                     <span className="block truncate">{movementLabels[movement.movementType]}</span>
                     {reasonLabel(movement.reason) ? (
                       <span className="block truncate text-xs font-medium text-muted">{reasonLabel(movement.reason)}</span>
                     ) : null}
                   </td>
-                  <td className={`whitespace-nowrap px-4 py-3 font-semibold ${increased ? "text-stock-in" : "text-stock-out"}`}>
+                  <td className={`whitespace-nowrap px-3 py-1.5 font-semibold ${increased ? "text-stock-in" : "text-stock-out"}`}>
                     {signed}
                   </td>
-                  <td className="truncate px-4 py-3 text-muted">{movement.createdBy ?? "—"}</td>
-                  <td className="truncate px-4 py-3 text-muted" title={movement.note ?? undefined}>
+                  <td className="truncate px-3 py-1.5 text-muted">{movement.createdBy ?? "—"}</td>
+                  <td className="truncate px-3 py-1.5 text-muted" title={movement.note ?? undefined}>
                     {movement.note ?? "—"}
                   </td>
                 </tr>

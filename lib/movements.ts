@@ -84,28 +84,29 @@ export async function productFlowTotals(productId: string) {
   return { stockIn, stockOut, error: null };
 }
 
-export async function listMovements(limit = 50, since?: Date | null) {
+export async function listMovements(limit = 50, since?: Date | null, offset = 0) {
   if (!getSupabaseServerConfig()) {
-    return { error: "Supabase is not configured.", movements: [] as MovementRecord[] };
+    return { error: "Supabase is not configured.", movements: [] as MovementRecord[], total: 0 };
   }
 
   let query = createSupabaseServerClient()
     .from("stock_movements")
-    .select(movementSelect)
+    .select(movementSelect, { count: "exact" })
     .order("created_at", { ascending: false })
-    .limit(since ? 500 : limit);
+    .range(offset, offset + limit - 1);
 
   if (since) {
     query = query.gte("created_at", since.toISOString());
   }
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
 
   if (error) {
-    return { error: error.message, movements: [] as MovementRecord[] };
+    return { error: error.message, movements: [] as MovementRecord[], total: 0 };
   }
 
-  return { error: null, movements: ((data ?? []) as MovementRow[]).map(toMovement) };
+  const movements = ((data ?? []) as MovementRow[]).map(toMovement);
+  return { error: null, movements, total: count ?? movements.length };
 }
 
 export async function getMovement(id: string) {

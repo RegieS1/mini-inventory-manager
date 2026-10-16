@@ -23,9 +23,9 @@ function Frame({
   return (
     <div className="flex min-h-full flex-col bg-canvas text-ink md:flex-row">
       <Suspense fallback={<SidebarFallback />}>{sidebar}</Suspense>
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex w-full min-w-0 flex-1 flex-col overflow-x-hidden">
         {notice}
-        <main className="flex-1 px-4 py-5 pb-24 md:px-7 md:py-7 md:pb-7">{children}</main>
+        <main className="w-full min-w-0 flex-1 overflow-x-hidden px-4 py-5 pb-24 md:px-7 md:py-7 md:pb-7">{children}</main>
       </div>
     </div>
   );
