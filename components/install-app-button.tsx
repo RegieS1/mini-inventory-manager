@@ -47,7 +47,7 @@ export function InstallAppButton() {
         iPhone: pindota ang Share, unya Add to Home Screen.
       </p>
       <p className={`mt-1 text-sm leading-6 ${help === "android" ? "font-semibold text-ink" : "text-muted"}`}>
-        Android: pindota ang menu, ang tulo ka tulbok sa taas, unya Install app o Add to Home screen.
+        Samsung: ayaw pilia ang Install app. Pili ang Add to Home screen. Ang Install app dili mo-install sa Samsung browser.
       </p>
     </div>
   );
