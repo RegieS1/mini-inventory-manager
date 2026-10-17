@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import { SessionSidebar } from "@/components/session-sidebar";
@@ -42,6 +43,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full font-sans">
+        <Script id="kugi-install" strategy="beforeInteractive">
+          {`window.addEventListener("beforeinstallprompt",function(event){event.preventDefault();window.__kugiInstall=event;});`}
+        </Script>
         <RegisterServiceWorker />
         <AppShell
           configured={getSupabaseServerConfig() !== null}

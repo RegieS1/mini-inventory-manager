@@ -54,10 +54,6 @@ async function Landing() {
       </p>
       <section className="mt-10 rounded-xl border border-line bg-surface p-5">
         <h2 className="font-semibold">On a phone</h2>
-        <p className="mt-2 text-sm leading-6 text-muted">
-          Open this page in the phone browser, then add Kugi to the home screen. On iPhone use Share, then Add to Home
-          Screen. On Android use the browser menu, then Install app or Add to Home Screen.
-        </p>
         <div className="mt-4">
           <InstallAppButton />
         </div>
